@@ -84,6 +84,9 @@ endif()
 
 if(ON_WINDOWS)
     link_libraries(winmm) # needed for timeGetTime
+    if(MINGW)
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
+    endif()
 endif()
 
 set(dirs clblas activate batch clmath conv dropout fc forcebackprop input layer loaders
@@ -132,9 +135,9 @@ if(LIBJPEG_AVAILABLE)
 endif(LIBJPEG_AVAILABLE)
 
 add_library(DeepCL SHARED ${deepcl_sources})
-if(ON_WINDOWS)
+if(ON_WINDOWS AND NOT MINGW)
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /NODEFAULTLIB:LIBCMT")
-endif(ON_WINDOWS)
+endif(ON_WINDOWS AND NOT MINGW)
 
 target_link_libraries(DeepCL EasyCL)
 target_link_libraries(DeepCL clBLAS)
